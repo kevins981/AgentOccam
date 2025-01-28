@@ -3809,7 +3809,8 @@
           "locator": "",
           "required_contents": {
             "must_include": [
-              "jaw bruxism",
+              "jaw",
+              "bruxism",
               "mouth guard"
             ]
           }
@@ -28661,7 +28662,7 @@
       ],
       "reference_answers": {
         "must_include": [
-          "412"
+          "414"
         ]
       },
       "reference_url": "",

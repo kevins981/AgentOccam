@@ -1,17 +1,15 @@
 # AgentOccam
-Code for "[AgentOccam: A Simple Yet Strong Baseline for LLM-Based Web Agents]()".
+Code for "[AgentOccam: A Simple Yet Strong Baseline for LLM-Based Web Agents](https://arxiv.org/abs/2410.13825)" (ICLR 2025).
 
 ![](files/overview.png)
 
-We work on automating web tasks! 🏄🏄🏄 We refine the LLM-based web agents by aligning their observation and action space with the capabilities of LLMs.
+AgentOccam offers a simple but strong baseline for LLM-based web agents. By providing a URL and the task you want it to perform, AgentOccam can execute it for you. Its simplicity and effectiveness allow you to run it directly, or adapt it into a larger pipeline for its executing web tasks, such as web information retrieval before processing the documents.
 
-The newly designed agent AgentOccam surpasses previous state-of-the-art methods and concurrent work significantly w/o in-context examples, new agent roles, online feedback or search strategies on [WebArena](https://webarena.dev), a benchmark featuring general-purpose web tasks. 🍺
+**Without using in-context examples, new agent roles, online feedback, or search strategies**, AgentOccam demonstrates impressive performance on tasks in WebArena (a web simulator benchmark with tasks from sites like shopping, shopping admin, GitLab, Reddit, map, etc.) and tasks with golden answers in WebVoyager (a benchmark based on real web tasks), once surpassing the SOTA on both leaderboards.
 
-We shed light on LLMs' impressive zero-shot performance on web tasks, and the critical role of carefully tuning observation and action spaces for LLM-based agents. 🧙
+In brief, our approach aligns the input (webpage descriptions, i.e., agent observations) and output (action strings that can be translated into web interactions, i.e., agent actions) of web tasks, with the tasks that LLMs are most familiar with, such as reading comprehension and question-answering. We refer to our approach **agent observation and action space alignment**, shedding light on LLMs' impressive zero-shot performance on web tasks, and **the critical role of carefully tuning observation and action spaces for LLM-based agents**.
 
-You can let AgentOccam interact with other websites like Google per your requests by defining the task config files, as seen in the example in `config_files/tasks/standford_cs_head.json`. Have fun playing with it! :)
-
-*Please check whether reddit post exceeds limits, login expires, or any other webarena simulator/website failure exists when you finish one round. You should restart the simluator/relogin to the websites and rerun those tasks before reporting your final success rate. Additionally, LLM policy varies even given the same task as the generation temperature is set to >0 for more diverse exploration. Therefore, it is expected that you can get difference traces when starting the same task multiple times. Try it out with the basic `config_files/tasks/standford_cs_head.json`!*
+You can let AgentOccam interact with other websites by defining task config files, as seen in the example in `config_files/tasks/Allrecipes--3.json`. Have fun playing with it! :)
 
 ## WebArena Replication
 ### Environment Setup
@@ -31,7 +29,7 @@ mkdir .auth
 ```
 
 ### Experiments
-#### AgentOccam-Series and SteP-Replication
+#### AgentOccam-Series and SteP-Replication (Please refer to SteP's official repo for their latest agent code.)
 * Connect to the WebArena host server.
 * Export the env configs:
 ```bash
@@ -43,7 +41,7 @@ export MAP="http://<webarena_server_address>:3000"
 export WIKIPEDIA="http://<webarena_server_address>:8888/wikipedia_en_all_maxi_2022-05/A/User:The_other_Kiwix_guy/Landing"
 export HOMEPAGE="http://<webarena_server_address>:4399"
 export OPENAI_API_KEY="<openai_api_key>"
-export GEMINI_API_KEY="<gemini_api_key>"
+export GEMINI_API_KEY="<gemini_api_key>" # Optional, we provide several other agent base models, such as Claude and LLaMa.
 ```
 * Login in:
 ```bash
@@ -54,10 +52,16 @@ python browser_env/auto_login.py
 python eval_webarena.py --config AgentOccam/configs/AgentOccam.yml # Replace the yml config with your target one.
 ```
 *You can use directly run `bash script/run_config.sh` after replacing the experiment configurations.*
-#### WebArena-Replication
+
+*Please check whether reddit post exceeds limits, login expires, or any other webarena simulator/website failure exists when you finish one round at WebArena. Additionally, LLM policy varies even given the same task, as the generation temperature is set to >0 for more diverse exploration. Therefore, it is expected that you can get difference traces when starting the same task multiple times. Try it out with the basic `config_files/tasks/Allrecipes--3.json`.*
+#### WebArena-Agent (Please refer to WebArena's official repo for their latest agent code.)
 ```bash
 bash scripts/run_webarena.sh
 ```
+### Trajectories
+Placed at [this link](https://drive.google.com/drive/folders/1MjnDIlfPGPjMFszirQO46fdP4LkH6669?usp=sharing).
+### Human Assessment
+Placed at `files/human_assessment/WebArena-AgentOccam.csv`.
 
 ## WebVoyager Replication
 ### Environment Setup
@@ -82,11 +86,14 @@ cd ../AgentOccam
 ```bash
 python eval_webarena.py --config AgentOccam/configs/AgentOccam-WebVoyager.yml
 ```
-#### Agent-E
+#### Agent-E (Please refer to Agent-E's official repo for their latest agent code.)
 ```bash
 python -m agente_replication --task_ids Allrecipes--3
 ```
-
+### Trajectories
+Placed at [this link](https://drive.google.com/drive/folders/1d5xPdOhYWjDTJqLmehdXs2AbtWCc4SXB?usp=sharing).
+### Human Assessment
+Placed at `files/human_assessment/WebVoyager-AgentOccam_*.csv`.
 
 
 ## Agent Configuration Explanation
