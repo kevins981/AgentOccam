@@ -1,4 +1,5 @@
 from AgentOccam.obs_opt import parse_node_descendants, parse_node_ancestors, parse_node_siblings, action_set_invisible, action_set_visible, action_set_visible_if_with_name, translate_node_to_str, construct_new_DOM_with_visible_nodes
+from AgentOccam.llms.centml import call_centml, call_centml_with_messages, arrange_message_for_centml
 from AgentOccam.llms.claude import call_claude, call_claude_with_messages, arrange_message_for_claude
 from AgentOccam.llms.mistral import call_mistral, call_mistral_with_messages, arrange_message_for_mistral
 from AgentOccam.llms.cohere import call_cohere, call_cohere_with_messages, arrange_message_for_cohere
@@ -22,8 +23,9 @@ warnings.filterwarnings("ignore")
 
 DEFAULT_DOCUMENTED_INTERACTION_ELEMENTS = ["observation", "action"]
 DEFAULT_ONLINE_INTERACTION_ELEMENTS = ["url", "observation"]
-MODEL_FAMILIES = ["claude", "mistral", "cohere", "llama", "titan", "gpt", "gemini"]
+MODEL_FAMILIES = ["centml", "claude", "mistral", "cohere", "llama", "titan", "gpt", "gemini"]
 CALL_MODEL_MAP = {
+    "centml": call_centml,
     "claude": call_claude,
     "mistral": call_mistral,
     "cohere": call_cohere,
@@ -33,6 +35,7 @@ CALL_MODEL_MAP = {
     "gemini": call_gemini,
 }
 CALL_MODEL_WITH_MESSAGES_FUNCTION_MAP = {
+    "centml": call_centml_with_messages,
     "claude": call_claude_with_messages,
     "mistral": call_mistral_with_messages,
     "cohere": call_cohere_with_messages,
@@ -42,6 +45,7 @@ CALL_MODEL_WITH_MESSAGES_FUNCTION_MAP = {
     "gemini": call_gemini_with_messages,
 }
 ARRANGE_MESSAGE_FOR_MODEL_MAP = {
+    "centml": arrange_message_for_centml,
     "claude": arrange_message_for_claude,
     "mistral": arrange_message_for_mistral,
     "cohere": arrange_message_for_cohere,
@@ -66,7 +70,10 @@ class Agent:
         else:
             self.online_interaction = {k: None for k in DEFAULT_ONLINE_INTERACTION_ELEMENTS}
 
-        self.model_family = [model_family for model_family in MODEL_FAMILIES if model_family in self.config.model][0]
+        if "deepseek" in self.config.model:
+            self.model_family = "centml"
+        else:
+            self.model_family = [model_family for model_family in MODEL_FAMILIES if model_family in self.config.model][0]
         self.call_model = partial(CALL_MODEL_MAP[self.model_family], model_id=self.config.model)
         self.call_model_with_message = partial(CALL_MODEL_WITH_MESSAGES_FUNCTION_MAP[self.model_family], model_id=self.config.model)
         self.arrange_message_for_model = ARRANGE_MESSAGE_FOR_MODEL_MAP[self.model_family]
