@@ -232,3 +232,4 @@ env:
 If `fullpage==True`, the agent takes the entire page as the input. Remember to add `scroll` to the `navigation_action` list if `fullpage` is disabled.
 
 If `prune==True`, the pipeline carries out observation space alignment.
+
